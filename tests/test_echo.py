@@ -7,7 +7,7 @@ Students MUST EDIT this module, to add more tests to run
 against the 'echo.py' program.
 """
 
-__author__ = "???"
+__author__ = "Tiree help from Mike"
 
 import sys
 import importlib
@@ -62,15 +62,13 @@ class TestEcho(unittest.TestCase):
             result, argparse.ArgumentParser,
             "create_parser() function is not returning a parser object")
 
-    #
-    # Students: add more parser tests here:
-    # - Does it understand the --upper option?
-    # - Does it understand `--lower` ? or `--title` ?
-    # - If you enable one option as true, are the rest false?
-    #
     def test_parser_namespace(self):
-        # your code here
-        self.fail()  # replace me
+        parser = self.module.create_parser()
+        namespace = parser.parse_args(['-l', 'HELLO WORLD'])
+        self.assertFalse(namespace.title)
+        self.assertFalse(namespace.upper)
+        self.assertTrue(namespace.lower)
+        self.assertEqual(namespace.text[0], 'HELLO WORLD')
 
     def test_echo(self):
         """Check if main() function prints anything at all"""
@@ -84,11 +82,11 @@ class TestEcho(unittest.TestCase):
         self.assertEqual(
             output[0], args[0],
             "The program is not performing simple echo"
-            )
+        )
 
     def test_lower_short(self):
         """Check if short option '-l' performs lowercasing"""
-        args = ["-l", "HELLO WORLD"]
+        args = ['HELLO WORLD', '-l']
         output = run_capture(self.module.__file__, args)
         self.assertEqual(output[0], "hello world")
 
@@ -98,48 +96,65 @@ class TestEcho(unittest.TestCase):
     #
 
     def test_lower_long(self):
-        # your code here
-        self.fail()  # replace me
+        """check if long option --lower perfroms the lower case"""
+        args = ['HELLO WORLD', '--lower']
+        output = run_capture(self.module.__file__, args)
+        self.assertEqual(output[0], "hello world")
 
     def test_upper_short(self):
-        # your code here
-        self.fail()  # replace me
+        """check if short option -u perfroms the upper case"""
+        args = ['HELLO WORLD', '-u']
+        output = run_capture(self.module.__file__, args)
+        self.assertEqual(output[0], "HELLO WORLD")
 
     def test_upper_long(self):
-        # your code here
-        self.fail()  # replace me
+        """check if long option --upper perfroms the upper case"""
+        args = ['HELLO WORLD', '--upper']
+        output = run_capture(self.module.__file__, args)
+        self.assertEqual(output[0], "HELLO WORLD")
 
     def test_title_short(self):
-        # your code here
-        self.fail()  # replace me
+        """check if short option -t perfroms the tile case"""
+        args = ['HELLO WORLD', '-t']
+        output = run_capture(self.module.__file__, args)
+        self.assertEqual(output[0], "Hello World")
 
     def test_title_long(self):
-        # your code here
-        self.fail()  # replace me
+        """check if long option --title perfroms the title case"""
+        args = ['HELLO WORLD', '--title']
+        output = run_capture(self.module.__file__, args)
+        self.assertEqual(output[0], "Hello World")
 
     def test_multiple_options(self):
-        # your code here
-        self.fail()  # replace me
+        args = ['HELLO WORLD', '--title', '--upper', '-l']
+        output = run_capture(self.module.__file__, args)
+        self.assertEqual(output[0], "hello world")
 
     def test_help_message(self):
-        # your code here
-        self.fail()  # replace me
+        args = ['-h']
+        with open('USAGE') as f:
+            usage = f.read().splitlines()
+        output = run_capture(self.module.__file__, args)
+        self.assertEqual(output, usage)
 
     #
     # Students: add a flake8 test here.
     # You may borrow some test code from previous assignments!
     #
-    def test_flake8(self):
-        # your code here
-        self.fail()  # replace me
 
+    def test_flake8(self):
+        """Checking for PEP8/flake8 compliance"""
+        result = subprocess.run(['flake8', self.module.__file__])
+        self.assertEqual(result.returncode, 0)
     #
     # Students: add an __author__ test here.
     # You may borrow some test code from previous assignments!
     #
+
     def test_author(self):
-        # your code here
-        self.fail()  # replace me
+        self.assertIsNotNone(self.module.__author__)
+        self.assertNotEqual(self.module.__author__, '???',
+                            'author string not completed')
 
 
 if __name__ == '__main__':
